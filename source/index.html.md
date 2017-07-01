@@ -352,7 +352,6 @@ Remember — Password of user can't be updated from here. But saves user's profi
 ## Change/Update password
 
 ```ruby
-
 require "net/http" 
 require "uri" 
 require "json" 
@@ -479,6 +478,99 @@ user["password"] | yes | New password (which should not be blank)
 
 <aside class="success">
 Remember — Password change also results in change in access_token and refresh_token of user, hence all other existing API end points being served will stop and they will need to get new access_token and refresh_token using log_in API end point mentioned below.
+</aside>
+
+## Renew access token (from refresh_token)
+
+```ruby
+require "net/http" 
+require "uri" 
+require "json" 
+uri = URI('http://local.drawingview.com:3000/users/1044c3c4-688e-4d5a-991a-2a8d97e54544/renew_access_token.json')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+req.body = {"refresh_token": "621b2d61-01e5-4c01-916b-a674aa786c46"}.to_json
+res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+  http.request(req)
+end
+puts res.body
+```
+
+```shell
+curl \
+-H "Content-Type: application/json" \
+-X POST -d '{"refresh_token": "621b2d61-01e5-4c01-916b-a674aa786c46"}' \
+http://local.drawingview.com:3000/users/1044c3c4-688e-4d5a-991a-2a8d97e54544/renew_access_token.json
+```
+
+```javascript
+var user_data = {"refresh_token": "621b2d61-01e5-4c01-916b-a674aa786c46"};
+$.ajax({
+    url: 'http://local.drawingview.com:3000/users/1044c3c4-688e-4d5a-991a-2a8d97e54544/renew_access_token.json',
+    headers: {
+        'Content-Type':'application/json',
+    },
+    method: 'POST',
+    dataType: 'json',
+    data:JSON.stringify( user_data),
+    success: function(data){
+      console.log('success: '+data);
+    }
+  });
+```
+
+> When (200 Ok), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Access token reissued.",
+   "errors":{
+
+   },
+   "user":{
+      "uuid":"1044c3c4-688e-4d5a-991a-2a8d97e54544",
+      "refresh_token":"621b2d61-01e5-4c01-916b-a674aa786c46",
+      "full_name":"Nirupma k Sinha",
+      "email":"nirupma@headerlabs.com",
+      "mobile_number":"+1 915-999-1111",
+      "company_name":"Khach pach",
+      "trial_begins_at":null,
+      "created_at":"2017-07-01T10:09:37.000Z",
+      "updated_at":"2017-07-01T11:35:34.000Z",
+      "trial_ends_at":null,
+      "trial_duration":1296000,
+      "access_token":"44c486d6-7a62-425b-814d-b4e926558ed1",
+      "profile_image":"/photofy/user/profile_pic/26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png",
+      "stamp_image":"/photofy/user/stamp/26_26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png"
+   }
+}
+```
+
+> When (404 Not Found), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"User not found or refresh_token invalid.",
+}
+```
+
+This endpoint renews access_token of user(used as in authorization header). Access token are time based and hence will be expired upon 30 days or by chance if access_token is lost, one can get it renewed from refresh_token. 
+
+<aside class="notice">
+This endpoint doesn't require authorization header.
+</aside>
+
+### HTTP Request
+
+`POST https://figs.drawingview.com/users/<UUID>/renew_access_token.json`
+
+### Post Parameters
+
+Parameter | Required | Description
+--------- | -------- | -----------
+refresh_token | yes | refresh_token of user generally available on user object when user is created or password is changed.
+
+<aside class="success">
+Remember — Will provide a new access_token but refresh_token will remain unchnaged.
 </aside>
 
 ## Get a Specific Kitten
