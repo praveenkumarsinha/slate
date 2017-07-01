@@ -349,6 +349,138 @@ user["profile_pic_delete"] | no | if provided with value "_delete" will delete t
 Remember — Password of user can't be updated from here. But saves user's profile inofrmation if validations pass.
 </aside>
 
+## Change/Update password
+
+```ruby
+
+require "net/http" 
+require "uri" 
+require "json" 
+uri = URI('http://local.drawingview.com:3000/users/1044c3c4-688e-4d5a-991a-2a8d97e54544/renew_password.json')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json', 'Authorization' => 'Bearer 7dd1c423-12c3-449e-9b28-262a15120e2d')
+req.body = {"user": {
+"current_password": "TestingPass@1234",
+"password": "Welcome@1234"
+}}.to_json
+res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+  http.request(req)
+end
+puts res.body
+
+```
+
+```shell
+curl \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 7dd1c423-12c3-449e-9b28-262a15120e2d" \
+-X POST -d '{"user": {
+"current_password": "TestingPass@1234",
+"password": "Welcome@1234"
+}}' \
+http://local.drawingview.com:3000/users/1044c3c4-688e-4d5a-991a-2a8d97e54544/renew_password.json
+```
+
+```javascript
+var user_data = {"user": {
+"current_password": "TestingPass@1234",
+"password": "Welcome@1234"
+}};
+$.ajax({
+    url: 'http://local.drawingview.com:3000/users/1044c3c4-688e-4d5a-991a-2a8d97e54544/renew_password.json',
+    headers: {
+        'Content-Type':'application/json',
+        'Authorization': 'Bearer 7dd1c423-12c3-449e-9b28-262a15120e2d'
+    },
+    method: 'POST',
+    dataType: 'json',
+    data:JSON.stringify( user_data),
+    success: function(data){
+      console.log('success: '+data);
+    }
+  });
+```
+
+> When (200 Ok), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Password changed successfully.",
+   "errors":{
+
+   },
+   "user":{
+      "uuid":"1044c3c4-688e-4d5a-991a-2a8d97e54544",
+      "refresh_token":"621b2d61-01e5-4c01-916b-a674aa786c46",
+      "full_name":"Nirupma k Sinha",
+      "email":"nirupma@headerlabs.com",
+      "mobile_number":"+1 915-999-1111",
+      "company_name":"Khach pach",
+      "trial_begins_at":null,
+      "created_at":"2017-07-01T10:09:37.000Z",
+      "updated_at":"2017-07-01T11:35:34.000Z",
+      "trial_ends_at":null,
+      "trial_duration":1296000,
+      "access_token":"6206dbca-6bc7-4e2a-a3dc-80e348db24d2",
+      "profile_image":"/photofy/user/profile_pic/26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png",
+      "stamp_image":"/photofy/user/stamp/26_26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png"
+   }
+}
+```
+
+> When (417 Expectation Failed), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Invalid current password.",
+}
+```
+
+> When (422 Unprocessable Entity), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Failed to update password because, Password can't be blank.",
+   "errors":{
+      "password":[
+         "can't be blank"
+      ]
+   },
+   "user":{
+      "uuid":"1044c3c4-688e-4d5a-991a-2a8d97e54544",
+      "refresh_token":"621b2d61-01e5-4c01-916b-a674aa786c46",
+      "full_name":"Nirupma k Sinha",
+      "email":"nirupma@headerlabs.com",
+      "mobile_number":"+1 915-999-1111",
+      "company_name":"Khach pach",
+      "trial_begins_at":null,
+      "created_at":"2017-07-01T10:09:37.000Z",
+      "updated_at":"2017-07-01T11:35:34.000Z",
+      "trial_ends_at":null,
+      "trial_duration":1296000,
+      "access_token":null,
+      "profile_image":"/photofy/user/profile_pic/26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png",
+      "stamp_image":"/photofy/user/stamp/26_26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png"
+   }
+}
+```
+
+This endpoint updates password of an existing user(identified by UUID). Which also results in change in access_token and refresh_token of user, hence all other existing API end points being served will stop. 
+
+### HTTP Request
+
+`POST http://local.drawingview.com:3000/users/<UUID>/renew_password.json`
+
+### Post Parameters
+
+Parameter | Required | Description
+--------- | -------- | -----------
+user["current_password"] | yes | Current password of user
+user["password"] | yes | New password (which should not be blank)
+
+<aside class="success">
+Remember — Password change also results in change in access_token and refresh_token of user, hence all other existing API end points being served will stop and they will need to get new access_token and refresh_token using log_in API end point mentioned below.
+</aside>
+
 ## Get a Specific Kitten
 
 ```ruby
