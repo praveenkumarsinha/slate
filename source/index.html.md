@@ -581,7 +581,7 @@ require "uri"
 require "json" 
 uri = URI('http://local.drawingview.com:3000/users/recover_password.json')
 req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json', 'Authorization' => 'Bearer 621b2d61-01e5-4c01-916b-a674aa786c46')
-req.body = {"user : {"email": "nirupma@headerlabs.com"}.to_json
+req.body = {"user": {"email": "nirupma@headerlabs.com"}}.to_json
 res = Net::HTTP.start(uri.hostname, uri.port) do |http|
   http.request(req)
 end
@@ -633,6 +633,10 @@ $.ajax({
 
 This endpoint sends an email with recover password linke(in it). Which can be used to change password. 
 
+<aside class="notice">
+This endpoint doesn't require authorization header.
+</aside>
+
 ### HTTP Request
 
 `POST https://sandbox.drawingview.com/users/recover_password.json`
@@ -645,6 +649,100 @@ user["email"] | yes | Should be an email of existing user(whose password needs t
 
 <aside class="success">
 Remember — Will send an email with password_recovery link in it.
+</aside>
+
+## Get user (from Email/Password)
+
+```ruby
+require "net/http" 
+require "uri" 
+require "json" 
+uri = URI('http://local.drawingview.com:3000/users/log_in.json')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+req.body = {"user": {"email": "nirupma@headerlabs.com", "password": "Welcome@1234" }}.to_json
+res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+  http.request(req)
+end
+puts res.body
+```
+
+```shell
+curl \
+-H "Content-Type: application/json" \
+-X POST -d '{"user": {
+"email": "nirupma@headerlabs.com",
+"password": "Welcome@1234"
+}}' \
+http://local.drawingview.com:3000/users/log_in.json
+```
+
+```javascript
+var user_data = {"user": {"email": "nirupma@headerlabs.com", "password": "Welcome@1234"}};
+$.ajax({
+    url: 'http://local.drawingview.com:3000/users/log_in.json',
+    headers: {
+        'Content-Type':'application/json'
+    },
+    method: 'POST',
+    dataType: 'json',
+    data:JSON.stringify( user_data),
+    success: function(data){
+      console.log('success: '+data);
+    }
+  });
+```
+
+> When (200 Ok), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Welcome back Nirupma k Sinha",
+   "user":{
+      "uuid":"1044c3c4-688e-4d5a-991a-2a8d97e54544",
+      "refresh_token":"621b2d61-01e5-4c01-916b-a674aa786c46",
+      "full_name":"Nirupma k Sinha",
+      "email":"nirupma@headerlabs.com",
+      "mobile_number":"+1 915-999-1111",
+      "company_name":"Khach pach",
+      "trial_begins_at":null,
+      "created_at":"2017-07-01T10:09:37.000Z",
+      "updated_at":"2017-07-01T11:35:34.000Z",
+      "trial_ends_at":null,
+      "trial_duration":1296000,
+      "access_token":"c139d1c0-9f0c-48c1-86e5-48ec255eefb4",
+      "profile_image":"/photofy/user/profile_pic/26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png",
+      "stamp_image":"/photofy/user/stamp/26_26_cf03cc48-c5a7-4bb6-b829-2015b9bdf798.png"
+   }
+}
+```
+
+> When (401 Unauthorized), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Provided credentials are incorrect. Please try again."
+}
+```
+
+This endpoint gets an existing user by email and password. Generally should be used to get new access_token if lost by any means. 
+
+<aside class="notice">
+This endpoint doesn't require authorization header.
+</aside>
+
+### HTTP Request
+
+`POST https://sandbox.drawingview.com/users/log_in.json`
+
+### Post Parameters
+
+Parameter | Required | Description
+--------- | -------- | -----------
+user["email"] | yes | Email of user's account.
+user["password"] | yes | Valid password of user's account.
+
+<aside class="success">
+Remember — Will provide a user object with new access_token.
 </aside>
 
 ## Get a Specific Kitten
