@@ -6,7 +6,7 @@
 require "net/http" 
 require "uri" 
 require "json" 
-uri = URI('http://local.drawingview.com:3000/projects/5-pages/folders.json')
+uri = URI('http://xxx.drawingview.com/projects/5-pages/folders.json')
 req = Net::HTTP::Get.new(uri, 'Content-Type' => 'application/json', 'Authorization' => 'Bearer b24db722-521e-426b-87ff-f40c56db99ed')
 res = Net::HTTP.start(uri.hostname, uri.port) do |http|
   http.request(req)
@@ -18,12 +18,12 @@ puts res.body
 curl \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer b24db722-521e-426b-87ff-f40c56db99ed" \
--X GET http://local.drawingview.com:3000/projects/5-pages/folders.json
+-X GET http://xxx.drawingview.com/projects/5-pages/folders.json
 ```
 
 ```javascript
 $.ajax({
-    url: 'http://local.drawingview.com:3000/projects/5-pages/folders.json',
+    url: 'http://xxx.drawingview.com/projects/5-pages/folders.json',
     headers: {
         'Content-Type':'application/json',
         'Authorization': 'Bearer b24db722-521e-426b-87ff-f40c56db99ed'
@@ -244,7 +244,7 @@ List all folders with files inside it. Could be cumbersome to handle if project 
 require "net/http" 
 require "uri" 
 require "json" 
-uri = URI('http://local.drawingview.com:3000/projects/5-pages/folders.json')
+uri = URI('http://xxx.drawingview.com/projects/5-pages/folders.json')
 req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json', 'Authorization' => 'Bearer b24db722-521e-426b-87ff-f40c56db99ed')
 req.body = {"folder": {
 "name" => "Some folder name"
@@ -261,7 +261,7 @@ curl \
 -H "Authorization: Bearer b24db722-521e-426b-87ff-f40c56db99ed" \
 -X POST -d '{"folder": {
 "name": "Some folder name"}}' \
-http://local.drawingview.com:3000/projects/5-pages/folders.json
+http://xxx.drawingview.com/projects/5-pages/folders.json
 ```
 
 ```javascript
@@ -269,7 +269,7 @@ var folder_data = {"folder": {
 "name": "Some folder name"
 }};
 $.ajax({
-    url: 'http://local.drawingview.com:3000/projects/5-pages/folders.json',
+    url: 'http://xxx.drawingview.com/projects/5-pages/folders.json',
     headers: {
         'Content-Type':'application/json',
         'Authorization': 'Bearer b24db722-521e-426b-87ff-f40c56db99ed'
@@ -327,7 +327,7 @@ This endpoint adds a new folder to project (only if its name is unique).
 
 ### HTTP Request
 
-`POST http://local.drawingview.com:3000/projects/<PROJECT_SLUG>/folders.json`
+`POST http://xxx.drawingview.com/projects/<PROJECT_SLUG>/folders.json`
 
 ### Post Parameters
 
@@ -345,7 +345,7 @@ Will create new folder in project if validations pass.
 require "net/http" 
 require "uri" 
 require "json" 
-uri = URI('http://local.drawingview.com:3000/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json')
+uri = URI('http://xxx.drawingview.com/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json')
 req = Net::HTTP::Patch.new(uri, 'Content-Type' => 'application/json', 'Authorization' => 'Bearer b24db722-521e-426b-87ff-f40c56db99ed')
 req.body = {"folder": {
 "name": ""
@@ -363,7 +363,7 @@ curl \
 -H "Authorization: Bearer b24db722-521e-426b-87ff-f40c56db99ed" \
 -X PATCH -d '{"folder": {
 "name": "Some new folder name"}}' \
-http://local.drawingview.com:3000/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json
+http://xxx.drawingview.com/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json
 ```
 
 ```javascript
@@ -371,7 +371,7 @@ var folder_data = {"folder": {
 "name": "Some new name"
 }};
 $.ajax({
-    url: 'http://local.drawingview.com:3000/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json',
+    url: 'http://xxx.drawingview.com/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json',
     headers: {
         'Content-Type':'application/json',
         'Authorization': 'Bearer b24db722-521e-426b-87ff-f40c56db99ed'
@@ -437,7 +437,7 @@ Updates the folder that literally means name can be updated so this is synonyms 
 
 ### HTTP Request
 
-`PATCH http://local.drawingview.com:3000/folders/<UUID>.json`
+`PATCH http://xxx.drawingview.com/folders/<UUID>.json`
 
 ### Post Parameters
 
@@ -461,7 +461,7 @@ curl -i -X POST \
 -H "Authorization: Bearer b24db722-521e-426b-87ff-f40c56db99ed" \
 -F assets_params["0"]["name"]=value1 -F assets_params["0"]["raw_source"]=@/home/praveen/Desktop/social_feeds.png \
 -F assets_params["1"]["name"]=value3 -F assets_params["1"]["raw_source"]=@/home/praveen/Desktop/social_feeds.png \
-http://local.drawingview.com:3000/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f/files/bulk_create.json
+http://xxx.drawingview.com/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f/files/bulk_create.json
 ```
 
 ```javascript
@@ -551,7 +551,7 @@ Remember — Can upload/add any number of files to a folder but large files or l
 require "net/http" 
 require "uri" 
 require "json" 
-uri = URI('http://local.drawingview.com:3000/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json')
+uri = URI('http://xxx.drawingview.com/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json')
 req = Net::HTTP::Delete.new(uri, 'Content-Type' => 'application/json', 'Authorization' => 'Bearer b24db722-521e-426b-87ff-f40c56db99ed')
 res = Net::HTTP.start(uri.hostname, uri.port) do |http|
   http.request(req)
@@ -564,12 +564,12 @@ curl \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer b24db722-521e-426b-87ff-f40c56db99ed" \
 -X DELETE \
-http://local.drawingview.com:3000/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json
+http://xxx.drawingview.com/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json
 ```
 
 ```javascript
 $.ajax({
-    url: 'http://local.drawingview.com:3000/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json',
+    url: 'http://xxx.drawingview.com/folders/6acf75db-38cd-4f2b-8ea9-0f80e0a5bf0f.json',
     headers: {
         'Content-Type':'application/json',
         'Authorization': 'Bearer b24db722-521e-426b-87ff-f40c56db99ed'
