@@ -573,6 +573,80 @@ refresh_token | yes | refresh_token of user generally available on user object w
 Remember — Will provide a new access_token but refresh_token will remain unchnaged.
 </aside>
 
+## Recover password (by email)
+
+```ruby
+require "net/http" 
+require "uri" 
+require "json" 
+uri = URI('http://local.drawingview.com:3000/users/recover_password.json')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json', 'Authorization' => 'Bearer 621b2d61-01e5-4c01-916b-a674aa786c46')
+req.body = {"user : {"email": "nirupma@headerlabs.com"}.to_json
+res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+  http.request(req)
+end
+puts res.body
+```
+
+```shell
+curl \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 621b2d61-01e5-4c01-916b-a674aa786c46" \
+-X POST -d '{"user": {
+"email": "nirupma@headerlabs.com"
+}}' \
+http://local.drawingview.com:3000/users/recover_password.json
+```
+
+```javascript
+var user_data = {"user": {"email": "nirupma@headerlabs.com"}};
+$.ajax({
+    url: 'http://local.drawingview.com:3000/users/recover_password.json',
+    headers: {
+        'Content-Type':'application/json',
+        'Authorization': 'Bearer 621b2d61-01e5-4c01-916b-a674aa786c46'
+    },
+    method: 'POST',
+    dataType: 'json',
+    data:JSON.stringify( user_data),
+    success: function(data){
+      console.log('success: '+data);
+    }
+  });
+```
+
+> When (200 Ok), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"An email with recovery link has been sent to you. Please follow the link (from email) to generate a new password"
+}
+```
+
+> When (422 Unprocessable Entity), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Unable to find user. Please check the email and try again or try signing up."
+}
+```
+
+This endpoint sends an email with recover password linke(in it). Which can be used to change password. 
+
+### HTTP Request
+
+`POST https://sandbox.drawingview.com/users/recover_password.json`
+
+### Post Parameters
+
+Parameter | Required | Description
+--------- | -------- | -----------
+user["email"] | yes | Should be an email of existing user(whose password needs to be recovered).
+
+<aside class="success">
+Remember — Will send an email with password_recovery link in it.
+</aside>
+
 ## Get a Specific Kitten
 
 ```ruby
