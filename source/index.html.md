@@ -1,10 +1,9 @@
 ---
-title: API Reference
+title: DrawingView API(v 0.1) Reference
 
 language_tabs:
   - shell
   - ruby
-  - python
   - javascript
 
 toc_footers:
@@ -19,68 +18,206 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the DrawingView API(v 0.1)! These API end points will serve core functionality from creating user to adding/uploading drawings and then data capturing using annotations like punch and drawing tools.
 
 We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+These API end points are also used to cater request from official DrawingView iPad/iPhone and Android apps.
 
 # Authentication
 
 > To authorize, use this code:
 
 ```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
+require "net/http" 
+require "uri" 
+url = URI.parse("api_endpoint_here") 
+req = Net::HTTP::Get.new(url.path) 
+req.add_field("Authorization", 'Bearer 7b77b0c2-870b-4bfd-a285-1f561087d503') 
+res = Net::HTTP.new(url.host, url.port).start do |http| 
+http.request(req) 
+end 
+puts res.body
 ```
 
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+  -H "Authorization: 7b77b0c2-870b-4bfd-a285-1f561087d503"
 ```
 
 ```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
+$.ajax({
+    url: 'api_endpoint_here',
+    headers: {
+        'Authorization':'Bearer 7b77b0c2-870b-4bfd-a285-1f561087d503',
+        'Content-Type':'application/json'
+    }
+  });
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Make sure to replace `7b77b0c2-870b-4bfd-a285-1f561087d503` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+DrawingView uses API key to allow access to the API, which can be grabbed by calling users's sign-up api or log-in api discussed below.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+DrawingView expects for the API key to be included in all API requests to the server in a header that looks like the following, unless mentioned otherwise:
 
-`Authorization: meowmeowmeow`
+`Authorization: Bearer 7b77b0c2-870b-4bfd-a285-1f561087d503`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>7b77b0c2-870b-4bfd-a285-1f561087d503</code> with user's personal API key.
 </aside>
 
-# Kittens
+# Users
 
-## Get All Kittens
+## Create a new user (Sign up)
+
+```ruby
+require "net/http" 
+require "uri" 
+require "json" 
+uri = URI('http://local.drawingview.com:3000/users.json')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+req.body = {"user": {
+"email" => "nirupma@headerlabs.com",
+"password" => "TestingPass@1234",
+"full_name" => "Sangita Sinha",
+"mobile_number"=> "+1 915-999-1111",
+"company_name" => "Khach pach", 
+"profile_pic" => "data:image/png;base64,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"
+}}.to_json
+res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+  http.request(req)
+end
+puts res.body
+
+```
+
+```shell
+curl \
+-H "Content-Type: application/json" \
+-X POST -d '{"user": {
+"email": "nirupma@headerlabs.com",
+"password": "TestingPass@1234",
+"full_name": "Steven Schumacher",
+"mobile_number": "+1 915-999-1111",
+"company_name": "Khach pach", 
+"profile_pic": "data:image/png;base64,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"
+}}' \
+http://local.drawingview.com:3000/users.json
+```
+
+```javascript
+var user_data = {"user": {
+"email": "nirupma@headerlabs.com",
+"password": "TestingPass@1234",
+"full_name": "Sangita Sinha",
+"mobile_number": "+1 915-999-1111",
+"company_name": "Khach pach", 
+"profile_pic": "data:image/png;base64,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"
+}};
+$.ajax({
+    url: 'http://local.drawingview.com:3000/users.json',
+    headers: {
+        'Content-Type':'application/json'
+    },
+    method: 'POST',
+    dataType: 'json',
+    data:JSON.stringify( user_data),
+    success: function(data){
+      console.log('success: '+data);
+    }
+  });
+```
+
+> When (200 Ok), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Profile created successfully, Welcome on-board.",
+   "errors":{
+
+   },
+   "user":{
+      "uuid":"1044c3c4-688e-4d5a-991a-2a8d97e54544",
+      "refresh_token":"0d035f8d-bb7f-4084-835a-087b3bf92b5c",
+      "full_name":"Sangita Sinha",
+      "email":"nirupma@headerlabs.com",
+      "mobile_number":"+1 915-999-1111",
+      "company_name":"Khach pach",
+      "trial_begins_at":null,
+      "created_at":"2017-07-01T10:09:37.000Z",
+      "updated_at":"2017-07-01T10:09:37.000Z",
+      "trial_ends_at":null,
+      "trial_duration":1296000,
+      "access_token":"7dd1c423-12c3-449e-9b28-262a15120e2d",
+      "profile_image":"/photofy/user/profile_pic/26_d4e23854-c890-475c-8189-149c6fba5cc5.png",
+      "stamp_image":"/photofy/user/stamp/26_26_d4e23854-c890-475c-8189-149c6fba5cc5.png"
+   }
+}
+```
+
+> When (422 Unprocessable Entity), the above command returns JSON structured like this:
+
+```json
+{
+   "message":"Encountered errors while creating user such as Email has already been taken.",
+   "errors":{
+      "email":[
+         "has already been taken"
+      ]
+   },
+   "user":{
+      "uuid":"ae566f6b-0539-44bd-a457-b758ab4026ec",
+      "refresh_token":null,
+      "full_name":"Sangita Sinha",
+      "email":"sangita@headerlabs.com",
+      "mobile_number":"+1 915-999-1111",
+      "company_name":"Khach pach",
+      "trial_begins_at":null,
+      "created_at":null,
+      "updated_at":null,
+      "trial_ends_at":null,
+      "trial_duration":1296000,
+      "access_token":null,
+      "profile_image":"",
+      "stamp_image":"/default_stamp_100_user_img.png"
+   }
+}
+```
+
+This endpoint signs up a new user in the system and provides access_token and refresh_token (which can be used to place other API requests).
+
+<aside class="notice">
+This endpoint doesn't require authorization header.
+</aside>
+
+### HTTP Request
+
+`POST https://xxx.drawingview.com/users.json`
+
+### Post Parameters
+
+Parameter | Required | Description
+--------- | -------- | -----------
+user["email"] | yes | Email of user (should be valid and uniqe)
+user["password"] | yes | Password should not be blank
+user["full_name"] | no | Full name of user
+user["mobile_number"] | no | Mobile number of user (we don't verify it currently though)
+user["company_name"] | no | Name of the company (if any)
+user["profile_pic"] | no | Base 64 enoded image or http uploaded file object
+
+<aside class="success">
+Creates a new user if validations pass!
+</aside>
+
+## Create a new user (Sign up) xxxxxx
 
 ```ruby
 require 'kittn'
 
 api = Kittn::APIClient.authorize!('meowmeowmeow')
 api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
 ```
 
 ```shell
@@ -116,7 +253,11 @@ let kittens = api.kittens.get();
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint signs up a new user in the system and provides access_token and refresh_token (which can be used to place other API requests).
+
+<aside class="notice">
+This endpoint doesn't require authorization header.
+</aside>
 
 ### HTTP Request
 
